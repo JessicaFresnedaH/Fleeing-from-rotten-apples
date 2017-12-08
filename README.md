@@ -16,7 +16,12 @@ De acuerdo con esto se diseñara un  juego que implementará el esquema de colab
 
 >Proyecto circleCI : https://circleci.com/gh/JessicaFresnedaH/Fleeing-from-rotten-apples
 
->URL Codacy : 
+
+>Documento de Arquitectura :https://drive.google.com/open?id=0B0-q82anX_EsZkhNX1lhY2c3SGc
+
+>Repositorio GitHub rama de Balanceador de Carga:  https://github.com/carolMeneses/manzanasPodridasBalanceador.git
+
+
 
 
 
