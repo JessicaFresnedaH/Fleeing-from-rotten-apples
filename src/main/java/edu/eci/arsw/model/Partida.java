@@ -210,4 +210,44 @@ public class Partida {
         return gameOver;
     }
 
+    /**
+     * Cuando sólo quede uno en pie indica quién tuvo más puntaje
+     * @return true si sólo queda un jugador
+     */
+    public boolean lastManStanding(){
+        boolean theLast = true;
+        int vivos = 0;
+        for(Jugador j : jugadores){
+            if(vivos < 2) {
+                if(j.isEstadoVivo()) vivos++;
+            } else{
+                theLast = false;
+                break;
+            }
+        }
+        return theLast;
+    }
+
+    /**
+     * Indica cuál jugador obtuvo el mayor puntaje y cuál due el último en pie
+     * @return i=0 es el jugador de mayor puntaje, i=1 es el último en pie
+     */
+    public ArrayList<Jugador> theLastAndTheBest(){
+        ArrayList<Jugador> players = new ArrayList<>();
+        Jugador last = null;
+        Jugador best = new Jugador();
+        best.setPuntaje(-1);
+        for(Jugador j : jugadores){
+            if(j.isEstadoVivo()){
+                last = j;
+            }
+            if(j.getPuntaje() >= best.getPuntaje()){
+                best = j;
+            }
+        }
+        players.add(best);
+        players.add(last);
+        return players;
+    }
+
 }

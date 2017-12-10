@@ -66,18 +66,24 @@ SimpMessagingTemplate msgt;
                 c.setColor(jugador.getColor());
                 if(c.isManzanaPodrida()){
                     c.setColor("red");
-                    
-                
-                    
                     jugador.setNumVidas(jugador.getNumVidas() - 1);
+                    msgt.convertAndSend("/topic/vidasJugador." + evtC.getNombreP() + "." + evtC.getJugador(), jugador);
                     if(jugador.getNumVidas() == 0){
                         jugador.setEstadoVivo(false);
                         msgt.convertAndSend("/topic/retirarJugador." + evtC.getNombreP() + "." + evtC.getJugador(), 0);
                         // Se cambia el nombre para que se pueda usar el mismo en otra partida.
-                        jugador.setNombre("");
+                        //jugador.setNombre("");
                         gameOver(p);
                     }
                 //Falta eliminar jugador y partida en caso de que sea el único jugador
+                } else{
+                    // Suma 5 si es una casilla con número, si está vacía sólo suma 4
+                    if(c.getIndicador() > 0){
+                        jugador.sumaPuntos(5);
+                    } else {
+                        jugador.sumaPuntos(4);
+                    }
+                    msgt.convertAndSend("/topic/puntosJugador." + evtC.getNombreP() + "." + evtC.getJugador(), jugador);
                 }
                 msgt.convertAndSend("/topic/casillaVisitada." + evtC.getNombreP(), c);
             }
@@ -151,7 +157,7 @@ SimpMessagingTemplate msgt;
         if(p != null){
             p.getJugador(partidaBase.getUsuario()).setEstadoVivo(false);
             // Se cambia el nombre para que se pueda usar el mismo en otra partida.
-            p.getJugador(partidaBase.getUsuario()).setNombre("");
+            //p.getJugador(partidaBase.getUsuario()).setNombre("");
             gameOver(p);
         }
     }
@@ -165,6 +171,10 @@ SimpMessagingTemplate msgt;
             msgt.convertAndSend("/topic/finJuego." + partida.getNombrePartida() , 0);
             // ¿Se elimina la partida? Por el momento sólo se cambia el nombre.
             partida.setNombrePartida("");
+        }
+
+        if(partida.lastManStanding() && partida.getJugadores().size() > 1) {
+            msgt.convertAndSend("/topic/finJuego." + partida.getNombrePartida(), partida.theLastAndTheBest());
         }
     }
 

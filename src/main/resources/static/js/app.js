@@ -72,16 +72,21 @@ var app = (function(){
                 }
             } ),
 
-            stompClient.subscribe('/topic/vidasJugador.' + nombreP + "." + usuario , (function (datos) {
-                var nuevoJuego = JSON.parse(datos.body);
-                document.getElementById("vidajugador").innerHTML = nuevoJuego.vidasJugador;
+            stompClient.subscribe('/topic/vidasJugador.' + nombreP + "." + usuario , (function (data) {
+                var user = JSON.parse(data.body);
+                $("#vidas").text("Vidas: " + user.numVidas);
             }));
+
+            stompClient.subscribe('/topic/puntosJugador.' + nombreP + "." + usuario, function (data){
+                var user = JSON.parse(data.body);
+                $("#puntaje").text("Puntaje: " + user.puntaje);
+            });
 
             stompClient.subscribe('/topic/manzanasPodridas.' + nombreP , function (datos) {
                 
                 var nuevoJuego = JSON.parse(datos.body);
                 document.getElementById("manzanasPodridas").innerHTML = nuevoJuego.manzanasPodridas;
-            }),
+            });
 
             stompClient.subscribe('/topic/casillaVisitada.' + nombreP , function (datos) {
                 cambiaCasilla(JSON.parse(datos.body));
@@ -95,8 +100,11 @@ var app = (function(){
                 alert("Lo siento, te has quedado sin vidas.");
             });
 
-            stompClient.subscribe('/topic/finJuego.' + nombreP , function (datos) {
-                alert("Ha muerto el último jugador en pie.\nFin de la partida");
+            stompClient.subscribe('/topic/finJuego.' + nombreP , function (data) {
+                var fin = JSON.parse(data.body);
+                alert("Sólo queda un jugador en pie. Fin de la partida");
+                alert("El jugador con mayor puntaje fue: " + fin[0].nombre + " con " + fin[0].puntaje);
+                alert("El último jugador en pie fue: " + fin[1].nombre);
             });
 
             cargarTablero();
@@ -118,21 +126,21 @@ var app = (function(){
         var color = casilla.color;
         prueba=casilla;
         
-        if (color==="red" && sessionStorage.getItem("nombreuser")=== casilla.username){
-            //se quitó una vida
-            vidas=vidas-1;
-            $("#vidas").text("Vidas:"+vidas);
-        }
+//        if (color==="red" && sessionStorage.getItem("nombreuser")=== casilla.username){
+//            //se quitó una vida
+//            vidas=vidas-1;
+//            $("#vidas").text("Vidas:"+vidas);
+//        }
         
         var indicador = casilla.indicador;
         if(indicador > 0 ){
             colocarText(indicador, color, posicionX, posicionY);
         } else{
-            if (sessionStorage.getItem("nombreuser")=== casilla.username){
-            //se quitó una vida
-            puntaje=puntaje+5;
-            $("#puntaje").text("Puntaje: "+puntaje);
-        }
+//            if (sessionStorage.getItem("nombreuser")=== casilla.username){
+//                //se quitó una vida
+//                puntaje=puntaje+5;
+//                $("#puntaje").text("Puntaje: "+puntaje);
+//            }
             llenar(posicionX, posicionY, color);
         }
 
@@ -259,9 +267,9 @@ var app = (function(){
     $(document).ready(
         function () {
             connectarJuego();
-            $("#nombrejugador").text("Nombre :"+sessionStorage.getItem("nombreuser"));
-            $("#vidas").text("Vidas: "+vidas);
-            $("#puntaje").text("Puntaje: "+puntaje);
+            $("#nombrejugador").text("Nombre:" + sessionStorage.getItem("nombreuser"));
+            $("#vidas").text("Vidas: " + vidas);
+            $("#puntaje").text("Puntaje: " + puntaje);
         }
     );
 
@@ -275,6 +283,3 @@ var app = (function(){
     };
 
 })();
-
-
-

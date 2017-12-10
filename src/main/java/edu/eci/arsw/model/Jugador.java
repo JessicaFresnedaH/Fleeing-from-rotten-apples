@@ -13,17 +13,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * Jessica y Johana
  */
 public class Jugador {
-    
-    private int numVidas;
-    private String nombre;
+
+    @JsonIgnore
     private String color;
+    @JsonIgnore
     private boolean estadoVivo = true;
    // cambiar x tipo partida
     @JsonIgnore
     private String nuevaPartida;
 
-
-    private int puntaje=0;
+    private int numVidas;
+    private String nombre;
+    private int puntaje = 0;
 
     public Jugador(){
 
@@ -81,5 +82,9 @@ public class Jugador {
     
     public String getPartida() {
         return nuevaPartida;
+    }
+
+    public void sumaPuntos(int puntos){
+        this.puntaje += puntos;
     }
 }
